@@ -50,9 +50,9 @@
                 {{-- Bulk --}}
                 <div class="flex gap-1 items-center">
                     <span class="text-xs text-gray-300">|</span>
-                    @if(in_array('absent',   $cols)) <button @click="bulkSet('absent')"   class="text-xs px-2.5 py-1.5 rounded-lg bg-red-50   text-red-600   hover:bg-red-100   border border-red-100   transition-colors">All Absent</button> @endif
-                    @if(in_array('one',      $cols)) <button @click="bulkSet('one')"      class="text-xs px-2.5 py-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 border border-green-100 transition-colors">All 1</button> @endif
-                    @if(in_array('one_half', $cols)) <button @click="bulkSet('one_half')" class="text-xs px-2.5 py-1.5 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-100 transition-colors">All 1.5</button> @endif
+                    @if(in_array('absent',   $cols)) <button @click="bulkSet('absent')"   class="text-xs px-2.5 py-1.5 rounded-lg bg-red-100   text-red-700   hover:bg-red-200   border border-red-200   transition-colors font-medium">All Absent</button> @endif
+                    @if(in_array('one',      $cols)) <button @click="bulkSet('one')"      class="text-xs px-2.5 py-1.5 rounded-lg bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border border-emerald-200 transition-colors font-medium">All 1</button> @endif
+                    @if(in_array('one_half', $cols)) <button @click="bulkSet('one_half')" class="text-xs px-2.5 py-1.5 rounded-lg bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-200 transition-colors font-medium">All 1.5</button> @endif
                     @if(in_array('overtime', $cols)) <button @click="bulkSet('clear_ot')" class="text-xs px-2.5 py-1.5 rounded-lg bg-gray-50  text-gray-500  hover:bg-gray-100  border border-gray-200  transition-colors">Clear OT</button> @endif
                 </div>
 
@@ -78,9 +78,9 @@
 
                     {{-- Stats pills --}}
                     <div class="hidden sm:flex items-center gap-2 text-xs">
-                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-full font-medium" x-text="stats.present + ' P'"></span>
-                        <span class="px-2 py-0.5 bg-red-50 text-red-600 rounded-full font-medium" x-text="stats.absent + ' A'"></span>
-                        <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-medium" x-text="stats.hajira + ' H'"></span>
+                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 rounded-full font-medium" x-text="stats.present + ' P'"></span>
+                        <span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full font-medium" x-text="stats.absent + ' A'"></span>
+                        <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full font-medium" x-text="stats.hajira + ' H'"></span>
                         <span x-show="stats.overtime > 0" class="px-2 py-0.5 bg-purple-50 text-purple-600 rounded-full font-medium" x-text="stats.overtime + 'h OT'"></span>
                     </div>
                 </div>
@@ -159,13 +159,13 @@
                 <tbody class="divide-y divide-gray-50">
                     <template x-for="emp in employees" :key="emp.id">
                         <tr class="group transition-colors"
-                            :class="emp.hajira_type === 'absent' ? 'bg-red-50/30 hover:bg-red-50/50' : 'hover:bg-blue-50/20'">
+                            :class="emp.hajira_type === 'absent' ? 'bg-red-100/60 hover:bg-red-100/80' : 'hover:bg-blue-50/40'">
 
                             {{-- Name --}}
                             <td class="px-4 py-2.5">
                                 <div class="flex items-center gap-2.5">
                                     <div class="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
-                                         :class="emp.hajira_type === 'absent' ? 'bg-red-100 text-red-500' : (emp.hajira_type === 'one_half' ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600')"
+                                         :class="emp.hajira_type === 'absent' ? 'bg-red-200 text-red-700' : (emp.hajira_type === 'one_half' ? 'bg-amber-200 text-amber-700' : 'bg-emerald-200 text-emerald-700')"
                                          x-text="emp.name.charAt(0).toUpperCase()">
                                     </div>
                                     <div>
@@ -180,8 +180,8 @@
                             <td class="px-3 py-2.5 text-center">
                                 <button @click="setHajiraAndSave(emp, 'absent')"
                                         :class="emp.hajira_type === 'absent'
-                                            ? 'bg-red-500 text-white ring-2 ring-red-200'
-                                            : 'bg-white text-gray-300 border border-gray-200 hover:border-red-300 hover:text-red-400'"
+                                            ? 'bg-red-600 text-white ring-2 ring-red-300 shadow-sm'
+                                            : 'bg-white text-gray-400 border border-gray-200 hover:border-red-400 hover:text-red-600 hover:bg-red-50'"
                                         class="w-8 h-8 rounded-lg text-xs font-bold transition-all">A</button>
                             </td>
                             @endif
@@ -191,8 +191,8 @@
                             <td class="px-3 py-2.5 text-center">
                                 <button @click="setHajiraAndSave(emp, 'one')"
                                         :class="emp.hajira_type === 'one'
-                                            ? 'bg-emerald-500 text-white ring-2 ring-emerald-200'
-                                            : 'bg-white text-gray-300 border border-gray-200 hover:border-emerald-300 hover:text-emerald-400'"
+                                            ? 'bg-emerald-600 text-white ring-2 ring-emerald-300 shadow-sm'
+                                            : 'bg-white text-gray-400 border border-gray-200 hover:border-emerald-400 hover:text-emerald-600 hover:bg-emerald-50'"
                                         class="w-8 h-8 rounded-lg text-xs font-bold transition-all">1</button>
                             </td>
                             @endif
@@ -202,8 +202,8 @@
                             <td class="px-3 py-2.5 text-center">
                                 <button @click="setHajiraAndSave(emp, 'one_half')"
                                         :class="emp.hajira_type === 'one_half'
-                                            ? 'bg-amber-500 text-white ring-2 ring-amber-200'
-                                            : 'bg-white text-gray-300 border border-gray-200 hover:border-amber-300 hover:text-amber-400'"
+                                            ? 'bg-amber-600 text-white ring-2 ring-amber-300 shadow-sm'
+                                            : 'bg-white text-gray-400 border border-gray-200 hover:border-amber-400 hover:text-amber-600 hover:bg-amber-50'"
                                         class="w-8 h-8 rounded-lg text-xs font-bold transition-all">1½</button>
                             </td>
                             @endif
@@ -252,7 +252,7 @@
                     <div class="flex items-center justify-between mb-3">
                         <div class="flex items-center gap-2.5">
                             <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold"
-                                 :class="emp.hajira_type === 'absent' ? 'bg-red-100 text-red-500' : 'bg-emerald-100 text-emerald-600'"
+                                 :class="emp.hajira_type === 'absent' ? 'bg-red-200 text-red-700' : 'bg-emerald-200 text-emerald-700'"
                                  x-text="emp.name.charAt(0).toUpperCase()"></div>
                             <div>
                                 <div class="text-sm font-semibold text-gray-800" x-text="emp.name"></div>
@@ -268,17 +268,17 @@
                         <div class="flex gap-1.5">
                             @if(in_array('absent', $cols))
                             <button @click="setHajiraAndSave(emp, 'absent')"
-                                    :class="emp.hajira_type === 'absent' ? 'bg-red-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-red-50 hover:text-red-500'"
+                                    :class="emp.hajira_type === 'absent' ? 'bg-red-600 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-700'"
                                     class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">A</button>
                             @endif
                             @if(in_array('one', $cols))
                             <button @click="setHajiraAndSave(emp, 'one')"
-                                    :class="emp.hajira_type === 'one' ? 'bg-emerald-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-emerald-50 hover:text-emerald-500'"
+                                    :class="emp.hajira_type === 'one' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-emerald-100 hover:text-emerald-700'"
                                     class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">1</button>
                             @endif
                             @if(in_array('one_half', $cols))
                             <button @click="setHajiraAndSave(emp, 'one_half')"
-                                    :class="emp.hajira_type === 'one_half' ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-amber-50 hover:text-amber-500'"
+                                    :class="emp.hajira_type === 'one_half' ? 'bg-amber-600 text-white shadow-sm' : 'bg-gray-100 text-gray-500 hover:bg-amber-100 hover:text-amber-700'"
                                     class="px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">1½</button>
                             @endif
                         </div>

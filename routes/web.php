@@ -106,11 +106,18 @@ Route::middleware('auth')->group(function () {
 
     // Admin - User management
     Route::middleware('permission:users.manage')->group(function () {
-        Route::get('/users', [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-        Route::get('/users/{user}/edit', [\App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
-        Route::post('/users/{user}/role', [\App\Http\Controllers\UserController::class, 'assignRole'])->name('users.assign-role');
+        Route::get('/users',                  [\App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::get('/users/create',           [\App\Http\Controllers\UserController::class, 'create'])->name('users.create');
+        Route::post('/users',                 [\App\Http\Controllers\UserController::class, 'store'])->name('users.store');
+        Route::get('/users/{user}/edit',      [\App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}',           [\App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}',        [\App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+        Route::patch('/users/{user}/password',[\App\Http\Controllers\UserController::class, 'resetPassword'])->name('users.reset-password');
     });
+
+    // Change own password (all authenticated users)
+    Route::get('/profile/password',   fn() => view('profile.change-password'))->name('profile.change-password');
+    Route::patch('/profile/password', [\App\Http\Controllers\UserController::class, 'changePassword'])->name('profile.change-password.update');
 
     // Admin - Activity Logs
     Route::middleware('permission:users.manage')->group(function () {

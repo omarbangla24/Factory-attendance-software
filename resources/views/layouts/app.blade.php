@@ -83,18 +83,40 @@
                         </svg>
                         Settings
                     </a>
+
+                    @can('users.manage')
+                    <a href="{{ route('users.index') }}" class="flex items-center px-4 py-3 rounded-lg hover:bg-blue-700 transition {{ request()->routeIs('users.*') ? 'bg-blue-700' : '' }}">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        Users
+                    </a>
+                    @endcan
                 </nav>
 
                 <!-- User Profile -->
-                <div class="p-4 border-t border-blue-700">
-                    <div class="flex items-center">
-                        <div class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center text-sm font-bold">
+                <div class="p-4 border-t border-blue-700" x-data="{ open: false }">
+                    <button @click="open = !open" class="flex items-center w-full text-left">
+                        <div class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center text-sm font-bold shrink-0">
                             {{ substr(auth()->user()->name, 0, 1) }}
                         </div>
-                        <div class="ml-3 flex-1">
-                            <p class="text-sm font-semibold">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-blue-200">{{ auth()->user()->role }}</p>
+                        <div class="ml-3 flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-blue-200">{{ auth()->user()->roles->first()?->name ?? 'user' }}</p>
                         </div>
+                        <svg class="w-4 h-4 text-blue-300 shrink-0 transition-transform" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                        </svg>
+                    </button>
+
+                    <div x-show="open" x-transition class="mt-3 space-y-1 pl-2">
+                        <a href="{{ route('profile.change-password') }}" {{-- GET route --}}
+                           class="flex items-center gap-2 px-3 py-2 text-xs text-blue-200 hover:text-white hover:bg-blue-700 rounded-lg transition-colors">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                            </svg>
+                            Change Password
+                        </a>
                     </div>
                 </div>
             </aside>

@@ -1,131 +1,114 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-2xl text-gray-800">Edit User: {{ $user->name }}</h2>
-            <a href="{{ route('users.index') }}" class="text-blue-600 hover:text-blue-900">← Back</a>
-        </div>
-    </x-slot>
+@extends('layouts.app')
 
-    <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-        <!-- User Information -->
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">User Information</h3>
-            
+@section('content')
+<div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-lg mx-auto">
+
+        <div class="flex items-center gap-3 mb-6">
+            <a href="{{ route('users.index') }}" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </a>
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Edit User</h1>
+                <p class="text-sm text-gray-500 mt-0.5">{{ $user->email }}</p>
+            </div>
+        </div>
+
+        <x-toast-notifications />
+
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-4">
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-4">Account Info</h2>
             <form method="POST" action="{{ route('users.update', $user) }}" class="space-y-4">
                 @csrf
                 @method('PUT')
-
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                    <input type="text" name="name" id="name" value="{{ $user->name }}" 
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                    @error('name')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent @error('name') border-red-400 @enderror">
+                    @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
-
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" name="email" id="email" value="{{ $user->email }}" 
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" required>
-                    @error('email')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent @error('email') border-red-400 @enderror">
+                    @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
-
-                <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                        Update User
-                    </button>
-                </div>
-            </form>
-        </div>
-
-        <!-- Role Assignment -->
-        <div class="bg-white rounded-lg shadow p-6 mb-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Assign Role</h3>
-            
-            <form method="POST" action="{{ route('users.assign-role', $user) }}" class="space-y-4">
-                @csrf
-
                 <div>
-                    <label for="role" class="block text-sm font-medium text-gray-700">Select Role</label>
-                    <div class="mt-2 space-y-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                    <div class="space-y-2">
                         @foreach($roles as $role)
-                            <label class="flex items-center">
-                                <input type="radio" name="role" value="{{ $role->name }}" 
-                                    @checked(in_array($role->name, $userRoles))
-                                    class="rounded-full">
-                                <span class="ml-3 text-sm text-gray-700">
-                                    <strong>{{ ucfirst($role->name) }}</strong>
-                                    @if($role->name === 'admin')
-                                        <span class="text-xs text-gray-600"> - Full access to all features</span>
-                                    @elseif($role->name === 'accountant')
-                                        <span class="text-xs text-gray-600"> - Manage payroll, advances, and reports</span>
-                                    @elseif($role->name === 'data_entry')
-                                        <span class="text-xs text-gray-600"> - Daily attendance entry only</span>
-                                    @endif
-                                </span>
-                            </label>
+                        @php
+                            $descs = [
+                                'admin'      => 'Full access — users, settings, all features',
+                                'accountant' => 'Payroll, advances, salaries, reports',
+                                'data_entry' => 'Daily attendance entry only',
+                            ];
+                            $isSelected = old('role', $userRole) === $role->name;
+                        @endphp
+                        <label class="flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors
+                                      {{ $isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:bg-gray-50' }}">
+                            <input type="radio" name="role" value="{{ $role->name }}"
+                                   {{ $isSelected ? 'checked' : '' }}
+                                   class="w-4 h-4 text-blue-600">
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">{{ ucfirst(str_replace('_', ' ', $role->name)) }}</p>
+                                <p class="text-xs text-gray-500">{{ $descs[$role->name] ?? '' }}</p>
+                            </div>
+                        </label>
                         @endforeach
                     </div>
-                    @error('role')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
+                    @error('role') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
-
-                <div class="flex justify-end">
-                    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
-                        Assign Role
-                    </button>
-                </div>
+                <button type="submit"
+                        class="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+                    Save Changes
+                </button>
             </form>
         </div>
 
-        <!-- Current Permissions -->
-        <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Current Permissions</h3>
-            
-            @if($user->roles->count() > 0)
-                <div class="space-y-3">
-                    <p class="text-sm text-gray-600">
-                        Role: <strong class="capitalize">{{ $user->roles->first()->name }}</strong>
-                    </p>
-                    
-                    <div>
-                        <p class="text-sm font-medium text-gray-700 mb-2">Permissions ({{ $user->permissions->count() }} total):</p>
-                        <div class="flex flex-wrap gap-2">
-                            @forelse($user->permissions as $permission)
-                                <span class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs">
-                                    {{ $permission->name }}
-                                </span>
-                            @empty
-                                <span class="text-gray-500 text-sm">No permissions</span>
-                            @endforelse
-                        </div>
-                    </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-4">
+            <h2 class="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-1">Reset Password</h2>
+            <p class="text-xs text-gray-400 mb-4">Set a new password for this user.</p>
+            <form method="POST" action="{{ route('users.reset-password', $user) }}" class="space-y-4">
+                @csrf
+                @method('PATCH')
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
+                    <input type="password" name="password" required
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                           placeholder="Minimum 8 characters">
                 </div>
-            @else
-                <p class="text-sm text-gray-600">
-                    <strong>No role assigned.</strong> Please select a role above to grant permissions.
-                </p>
-            @endif
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+                    <input type="password" name="password_confirmation" required
+                           class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+                           placeholder="Re-enter new password">
+                </div>
+                <button type="submit"
+                        class="w-full py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-lg hover:bg-amber-600 transition-colors">
+                    Reset Password
+                </button>
+            </form>
         </div>
 
-        <!-- Role Definitions (Reference) -->
-        <div class="bg-blue-50 rounded-lg p-6 mt-6 border border-blue-200">
-            <h4 class="text-sm font-semibold text-blue-900 mb-3">Role Definitions</h4>
-            <div class="space-y-3 text-sm text-blue-800">
-                <div>
-                    <strong>Admin:</strong> Full access to all features including user management and settings
-                </div>
-                <div>
-                    <strong>Accountant:</strong> Can manage employees, advances, salaries, payments, and view reports
-                </div>
-                <div>
-                    <strong>Data Entry:</strong> Can only view employees and manage daily attendance entry
-                </div>
-            </div>
+        @if($user->id !== auth()->id())
+        <div class="bg-white rounded-xl shadow-sm border-2 border-red-100 p-6">
+            <h2 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-1">Danger Zone</h2>
+            <p class="text-xs text-gray-500 mb-4">Permanently deletes this user account. Cannot be undone.</p>
+            <form action="{{ route('users.destroy', $user) }}" method="POST"
+                  onsubmit="return confirm('Delete {{ addslashes($user->name) }}? This cannot be undone.')">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="px-4 py-2 text-sm font-semibold text-red-600 border border-red-300 rounded-lg hover:bg-red-600 hover:text-white hover:border-red-600 transition-all">
+                    Delete This User
+                </button>
+            </form>
         </div>
+        @endif
+
     </div>
-</x-app-layout>
+</div>
+@endsection
